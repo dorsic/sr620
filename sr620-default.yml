@@ -1,0 +1,63 @@
+# Configuration file for sr620.py script to communicate with SR620 universal time interval counter and reading and storing measured values.
+# The configuration parameter priority is 1. command line arguments 2. yaml configuration file settings 3. default values
+
+
+# ----------------------  SERIAL PORT CONNECTION  -----------------------
+# Use default port settings of the SR620 counter - 9600 8N1
+# IMPORTANT NOTE - the timeout must be sufficienly long to accomodate whole time of performing one measurement of N samples
+
+serial_connection:
+  device: /dev/ttyAMA0
+  timeout: 3
+  baudrate: 9600
+
+# ----------------------  OUTPUTS  --------------------------------------
+# You may disconnect the usb flash drive anytime configured as secondary log folder.
+# Just do not forget to plug it in again.
+# Data file filename are generated in the form of <prefix>YYYYDOYHHMM.txt where DOY is day of year (001-366)
+
+# the folder must exists prior starting the script
+primary_data_path: ./data
+# can be dettachable
+secondary_data_path: /media/usb/sr620 
+
+#Data file prefix.
+prefix: vectron1-
+
+# Number of days after which data files will be deleted from primary_data_path
+max_history: 999
+# Number of days that will be sync to second data file location (e.g. usb drive) upon being available.
+max_sync: 32
+
+# ----------------------  INSTRUMENT CONFIGURATION  ---------------------
+# Script logs PPS delay measurement between A-B channels with SR620.
+# Defaults are A-B time interval measurement, 1.5V trigger level, DC, 50 Ohms for both channels.
+instrument_configuration:
+    - command: " "
+      desc: ""
+    - command: "ERRS?;*RST;LOCL1"
+      desc: "Counter reset and prepared for configuration."
+    - command: "MODE 0;SIZE 1;SRCE 0"
+      desc: "Time mode selected, sample size 1, source A."      
+    - command: "TCPL 1,0;TCPL 2,0"
+      desc: "Channels A and B set to be DC coupled."
+    - command: "TERM 1,0;TERM 2,0"
+      desc: "Channels A and B set to be 50 Ohm terminated."
+    - command: "TMOD 1,0;TMOD 2,0"
+      desc: "Channels A and B trigger mode normal."
+    - command: "TSLP 1,0;TSLP 2,0"
+      desc: "Channels A and B trigger slope positive."
+    - command: "LEVL 1,1.5;LEVL 2,1.5"
+      desc: "Trigger levels of channels A and B set to 1.5V."
+    - command: "ARMM 0;AUTM 1;DREL 0"
+      desc: "Arming mode +-time, automode on, A and B trigger slope positive."
+
+# if true the instrument will be configured with instrument_configuration commands after opening the serial connection
+configure_upon_start: false
+
+# if true the measurement will be started immediately after configuration (or opening the serial connection)
+start_measurement_immediately: true
+
+# wait for measurement to finish and then read the mean value
+read_value_commands: "*WAI;XAVG?"
+
