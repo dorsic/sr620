@@ -32,14 +32,16 @@ No header line is written to the data file.
 The data files are divided into days, so a new file is created for each day.
 
 Data files are created in the form
-```<configurable prefix><4 digit year><3 digit day of year><hour><minute>.txt```
+```
+<configurable prefix><4 digit year><3 digit day of year><hour><minute>.txt
+```
 
 where the hour and minute being in UTC.
 
-A 3 day long measurement will create 3 files
-sr620-20231501456.txt
-sr620-20231510000.txt
-sr620-20231520000.txt
+A 3 day long measurement will create 3 files:
+- sr620-20231501456.txt
+- sr620-20231510000.txt
+- sr620-20231520000.txt
 
 #### Data files synchronization
 Data files are logged to both a primary location and secondary locations. The primary location folder, as stated in the configuration, must exist before starting the script. The secondary location is used only when the specified folder exists.
